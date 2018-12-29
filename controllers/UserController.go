@@ -2,25 +2,29 @@ package controllers
 
 import (
 	"github.com/astaxie/beego"
+	"item1024.com/draw/constants"
 	m "item1024.com/draw/models"
 	"strconv"
 	"time"
 )
 
 type UserController struct {
-	beego.Controller
+	BaseController
 }
 
-func (u *UserController) UserLogin() {
-	user := new(m.TUserBase)
-	user.Online = 1
+func (u *UserController) UserRegiste() {
+	user := new(m.UserBase)
+	user.Online = 0
 	user.Username = u.GetString("userName")
 	user.Password = u.GetString("userPwd")
-	user.C_time = time.Now().Format("2006-01-02 15:04:05")
+	user.C_time = time.Now()
 	user.Status = 1
-	res, error := m.User_insert(user)
-	println("插入成功:" + strconv.FormatInt(res, 10))
+	res, error := m.InsertUser(user)
+	beego.Debug("insert sucs:", strconv.FormatInt(res, 10))
 	if error != nil {
 		println(error)
+	} else {
+		u.Data["msg"] = constants.MSG_LOGIN_SUC
+		u.TplName = "index.tpl"
 	}
 }
