@@ -5,22 +5,12 @@ import (
 )
 
 type MainController struct {
-	beego.Controller
+	BaseController
 }
 
-func (c *MainController) Get() {
-	println(c.GetString("userId"))
-	println(c.Ctx.Request.Header.Get("userId"))
-	v := c.GetSession("test")
-	if v == nil {
-		c.SetSession("test", string("测试测试"))
-	} else {
-		print(v)
-	}
-	beego.Debug(test(555555), "1232")
-	c.Data["Website"] = "测试控制器"
-	c.Data["Email"] = "astaxie@gmail.com"
-	c.TplName = "index.tpl"
+func (this *MainController) Get() {
+	beego.Debug("goto")
+	this.TplName = "user/login.tpl"
 }
 
 func test(i int) (str string) {

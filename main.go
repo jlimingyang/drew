@@ -37,17 +37,20 @@ func init() {
 	beego.SetLevel(beego.LevelDebug)
 	beego.SetLogFuncCall(true)
 	//filter
-	beego.InsertFilter("/auth/*", beego.BeforeExec, FilterUser, true)
+	beego.InsertFilter("/auth/api/*", beego.BeforeExec, FilterUser, true)
+	beego.InsertFilter("/auth/page/*", beego.BeforeExec, FilterPage, true)
 }
 
 func main() {
+	//beego.SetStaticPath("/web","views")
 	beego.Run()
 
 }
 
+//过滤用户权限返回json
 var FilterUser = func(ctx *context.Context) {
 	println("auth filter init...")
-	res := utils.Response{500, constants.MSG_LOGIN_FAIL, nil}
+	res := utils.Response{500, constants.AUTH_VER_FAIL, nil}
 	msg, err := json.Marshal(res)
 	if err != nil {
 		ctx.ResponseWriter.Write(msg)
@@ -65,4 +68,19 @@ var FilterUser = func(ctx *context.Context) {
 			}
 		}
 	}
+}
+//过滤用户权限返回权限页面
+var FilterPage = func(ctx *context.Context) {
+		token := ctx.Request.Header.Get("auth")
+		if !strings.Contains(token, ".") {
+			ctx.Redirect(302, "/login")
+		} else {
+			custom := utils.CheckToken(token)
+			if custom == nil {
+				ctx.Redirect(302, "/login")
+			} else {
+				ctx.Input.SetParam("userId", custom.UserId)
+				ctx.Input.SetParam("userName", custom.UserName)
+			}
+		}
 }
