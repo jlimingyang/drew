@@ -15,6 +15,11 @@ type UserToken struct {
 	U_time time.Time
 }
 
+type User struct {
+	userId   int    `json:"Id"`
+	userName string `json:"Issuer"`
+}
+
 //插入token
 func InsertToken(token *UserToken) (int64, error) {
 	o := orm.NewOrm()

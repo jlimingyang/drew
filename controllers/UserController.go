@@ -20,11 +20,10 @@ func (u *UserController) UserRegiste() {
 	user.C_time = time.Now()
 	user.Status = 1
 	res, error := m.InsertUser(user)
-	beego.Debug("insert sucs:", strconv.FormatInt(res, 10))
+	beego.Debug("insert suc:", strconv.FormatInt(res, 10))
 	if error != nil {
-		println(error)
+		beego.Debug(error)
 	} else {
 		u.Data["msg"] = constants.MSG_LOGIN_SUC
-		u.TplName = "index.tpl"
 	}
 }
