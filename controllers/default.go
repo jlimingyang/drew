@@ -9,7 +9,8 @@ type MainController struct {
 }
 
 func (c *MainController) Get() {
-	println("我就是想试一下打印的感觉")
+	println(c.GetString("userId"))
+	println(c.Ctx.Request.Header.Get("userId"))
 	v := c.GetSession("test")
 	if v == nil {
 		c.SetSession("test", string("测试测试"))

@@ -31,31 +31,38 @@ func init() {
 	// create table
 	orm.RunSyncdb(dbalias, false, true)
 	orm.DefaultTimeLoc = time.UTC
-
-}
-
-func main() {
-	beego.Run()
+	//log
 	beego.SetLogger("log", `{"filename":"logs/draw.log"}`)
 	beego.BeeLogger.DelLogger("log")
 	beego.SetLevel(beego.LevelDebug)
 	beego.SetLogFuncCall(true)
-	beego.InsertFilter("*/", beego.BeforeExec, FilterUser)
+	//filter
+	beego.InsertFilter("/auth/*", beego.BeforeExec, FilterUser, true)
+}
+
+func main() {
+	beego.Run()
+
 }
 
 var FilterUser = func(ctx *context.Context) {
+	println("auth filter init...")
 	res := utils.Response{500, constants.MSG_LOGIN_FAIL, nil}
 	msg, err := json.Marshal(res)
-	token := ctx.Request.Header.Get("auth")
-	if !strings.Contains(token, ".") {
-		if err == nil {
+	if err != nil {
+		ctx.ResponseWriter.Write(msg)
+	} else {
+		token := ctx.Request.Header.Get("auth")
+		if !strings.Contains(token, ".") {
+			ctx.ResponseWriter.Write(msg)
+		} else {
 			custom := utils.CheckToken(token)
-			if custom != nil {
+			if custom == nil {
+				ctx.ResponseWriter.Write(msg)
+			} else {
 				ctx.Input.SetParam("userId", custom.UserId)
 				ctx.Input.SetParam("userName", custom.UserName)
 			}
 		}
 	}
-	ctx.ResponseWriter.Write(msg)
-
 }
