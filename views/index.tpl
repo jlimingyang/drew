@@ -1,24 +1,72 @@
 <!doctype html>
-<html lang="zh_cn">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+<title>抽奖</title>
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="/static/css/css.css" type="text/css">
 
-    <title>Hello, world!</title>
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
-    <h2>{{.token}}</h2>
-    <h2>{{.username}}</h2>
+</head>
+<body>
+<div class="bg"></div>
+<div class="dog"><img src="/static/img/1_01.png"></div>
+<div class="reward"><img id="levelImg" src="/static/img/1_02.png"><!-- 四等奖1_02.png;  三等奖1_02a.png;  二等奖1_02b.png;  一等奖1_02c.png --></div>
+<div class="turntable">
+	<img src="/static/img/1_03.png" class="img">
+	<div class="jz"><span class="name"><img src="/static/img/1_05.png"></span></div>
+</div>
+<div class="btn">
+  	<div class="start" id="btntxt" onclick="start()">开始</div>
+	<div class="start btn_none" id="btnqr" onclick="">确认名单</div>
+</div>
+<div class="confirmbox">
+	<div class="bg_img"><img src="/static/img/1_04.png"></div>
+    <div class="box">
+    	<div class="title">获奖号码公布</div>
+        <div class="lucknum">
+        	<span>00</span>
+            <span>00</span>
+            <span>00</span>
+            <span>00</span>
+            <div class="clear"></div>
+        </div>
+        <div class="conbox"></div>
+    </div>
+</div>
+<div class="zjmd">
+  	<div class="title">获奖名单公布栏</div>
+    <div class="div1">
+    	<div class="p1a">一等奖：</div>
+        <div class="p1a">二等奖：</div>
+        <div class="p1a">三等奖：</div>
+        <div class="p1a">四等奖：</div>
+        <div class="div2">
+            <div class="p1">??</div>
+            <div class="p2">??</div>
+            <div class="p3">??</div>
+            <div class="p4">??</div>
+            <div class="p5">??</div>
+            <div class="p6">??</div>
+            <div class="p7">??</div>
+            <div class="p8">??</div>
+            <div class="p9">??</div>
+            <div class="p10">??</div>
+        </div>
+        <div id="content">
+            <div class="zjmd_bt_xy"></div>
+        </div>
+    </div>
+</div>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.12.1.min.js"></script>
+<script type="text/javascript" src="/static/js/adaptive-version2.js"></script>
+<script type="text/javascript" src="/static/js/cj.js"></script>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.bootcss.com/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.bootcss.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-  </body>
+
+</body>
 </html>
+
+
