@@ -1,19 +1,17 @@
 package controllers
 
-import (
-	"github.com/astaxie/beego"
-)
-
 type MainController struct {
 	BaseController
 }
 
-func (this *MainController) Get() {
-	beego.Debug("goto")
+//登录页面
+func (this *MainController) Login() {
+	this.Data["msg"] = "debug"
 	this.TplName = "user/login.tpl"
 }
 
-func test(i int) (str string) {
-	str = string(i) + "hello"
-	return
+//注册页面
+func (this *MainController) Registe() {
+	this.Data["msg"] = "debug"
+	this.TplName = "user/registe.tpl"
 }

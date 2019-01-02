@@ -12,6 +12,8 @@
   </head>
   <body>
     <h1>Hello, world!</h1>
+    <h2>{{.token}}</h2>
+    <h2>{{.username}}</h2>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

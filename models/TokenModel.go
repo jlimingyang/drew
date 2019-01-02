@@ -9,8 +9,8 @@ import (
 type UserToken struct {
 	Id     int `orm:"pk;auto"`
 	UserId int
-	Token  string
-	Status int8
+	Token  string `orm:"unique"`
+	Status int8   "0为无效  1为有效  2为已经使用"
 	C_time time.Time
 	U_time time.Time
 }
@@ -24,8 +24,19 @@ type User struct {
 func InsertToken(token *UserToken) (int64, error) {
 	o := orm.NewOrm()
 	o.Using("default")
+	token.C_time = time.Now()
+	token.U_time = time.Now()
 	token.Status = 1
 	return o.Insert(token)
+}
+
+//设置token状态 0 无效  1 有效 2 已使用
+func setInvalidById(id int, status int8) (int64, error) {
+	o := orm.NewOrm()
+	o.Using("default")
+	userToken := new(UserToken)
+	userToken.Status = status
+	return o.Update(&userToken, "Status")
 }
 
 // 查询token列表
@@ -36,6 +47,7 @@ func QueryToken(page int, pagesize int) (list utils.Page) {
 	}
 	pagesize = page * pagesize
 	o := orm.NewOrm()
+	o.Using("default")
 	qs := o.QueryTable(new(UserToken))
 	qs.OrderBy("-id")
 	qs.Limit(page, pagesize)
@@ -46,21 +58,11 @@ func QueryToken(page int, pagesize int) (list utils.Page) {
 	return
 }
 
-//查找列表
-func CountTokenByUserId(userId int64, status int8) (int64, error) {
+//查询
+func TokenIsExist(token string) bool {
 	o := orm.NewOrm()
+	o.Using("default")
 	qs := o.QueryTable(new(UserToken))
-	qs.Filter("userId", userId)
-	qs.Filter("status", 1)
-	return qs.Count()
-}
-
-//查询用户
-func QueryUserTokenByToken(token string) (userToken UserToken) {
-	o := orm.NewOrm()
-	qs := o.QueryTable(new(UserToken))
-	qs.Filter("token", token)
-	qs.Filter("status", 1)
-	qs.One(userToken)
-	return
+	qs = qs.Filter("Token", token).Filter("Status", "1")
+	return qs.Exist()
 }

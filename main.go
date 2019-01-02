@@ -9,6 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"item1024.com/draw/constants"
 	_ "item1024.com/draw/routers"
+	"item1024.com/draw/structs"
 	"item1024.com/draw/utils"
 	"strings"
 	"time"
@@ -50,7 +51,7 @@ func main() {
 //过滤用户权限返回json
 var FilterUser = func(ctx *context.Context) {
 	println("auth filter init...")
-	res := utils.Response{500, constants.AUTH_VER_FAIL, nil}
+	res := structs.Response{500, constants.AUTH_VER_FAIL, nil}
 	msg, err := json.Marshal(res)
 	if err != nil {
 		ctx.ResponseWriter.Write(msg)
@@ -69,18 +70,19 @@ var FilterUser = func(ctx *context.Context) {
 		}
 	}
 }
+
 //过滤用户权限返回权限页面
 var FilterPage = func(ctx *context.Context) {
-		token := ctx.Request.Header.Get("auth")
-		if !strings.Contains(token, ".") {
+	token := ctx.Request.Header.Get("auth")
+	if !strings.Contains(token, ".") {
+		ctx.Redirect(302, "/login")
+	} else {
+		custom := utils.CheckToken(token)
+		if custom == nil {
 			ctx.Redirect(302, "/login")
 		} else {
-			custom := utils.CheckToken(token)
-			if custom == nil {
-				ctx.Redirect(302, "/login")
-			} else {
-				ctx.Input.SetParam("userId", custom.UserId)
-				ctx.Input.SetParam("userName", custom.UserName)
-			}
+			ctx.Input.SetParam("userId", custom.UserId)
+			ctx.Input.SetParam("userName", custom.UserName)
 		}
+	}
 }
