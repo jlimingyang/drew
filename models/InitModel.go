@@ -11,5 +11,5 @@ import (
 
 func init() {
 	// 需要在 init 中注册定义的 model
-	orm.RegisterModelWithPrefix(beego.AppConfig.String("tbprefix"), new(UserToken), new(UserBase))
+	orm.RegisterModelWithPrefix(beego.AppConfig.String("tbprefix"), new(UserToken), new(UserBase), new(DrawConfig), new(DrawRecord))
 }

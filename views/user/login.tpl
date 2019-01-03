@@ -18,7 +18,7 @@
             <input  id="debug" type="hidden" value = "{{.msg}}"/>
             <input  id="msgType" type="hidden" value = "{{.msgType}}"/>
                 <h3 class="form-title">用户登录</h3>
-                <form role="form" action="/user/login.py">
+                <form role="form" action="/user/login.py" method="post">
                 <div class="col-md-9">
                     <div class="form-group">
                         <i class="fa fa-user fa-lg"></i>

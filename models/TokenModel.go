@@ -34,9 +34,9 @@ func InsertToken(token *UserToken) (int64, error) {
 func setInvalidById(id int, status int8) (int64, error) {
 	o := orm.NewOrm()
 	o.Using("default")
-	userToken := new(UserToken)
-	userToken.Status = status
-	return o.Update(&userToken, "Status")
+	return o.QueryTable(new(UserToken)).Filter("Id", id).Update(orm.Params{
+		"Status": status,
+	})
 }
 
 // 查询token列表
@@ -48,11 +48,9 @@ func QueryToken(page int, pagesize int) (list utils.Page) {
 	pagesize = page * pagesize
 	o := orm.NewOrm()
 	o.Using("default")
-	qs := o.QueryTable(new(UserToken))
-	qs.OrderBy("-id")
-	qs.Limit(page, pagesize)
+	qs := o.QueryTable(new(UserToken)).OrderBy("-id").Limit(page, pagesize)
 	total, error := qs.All(&list)
-	if error != nil {
+	if error == nil {
 		utils.PageUtil(int(total), page, pagesize, list)
 	}
 	return
@@ -62,7 +60,6 @@ func QueryToken(page int, pagesize int) (list utils.Page) {
 func TokenIsExist(token string) bool {
 	o := orm.NewOrm()
 	o.Using("default")
-	qs := o.QueryTable(new(UserToken))
-	qs = qs.Filter("Token", token).Filter("Status", "1")
+	qs := o.QueryTable(new(UserToken)).Filter("Token", token).Filter("Status", "1")
 	return qs.Exist()
 }

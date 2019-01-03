@@ -47,46 +47,46 @@ xinm[37]="38"
 xinm[38]="39"
 xinm[39]="40"
 
-phone[0]=""
-phone[1]=""
-phone[2]=""
-phone[3]=""
-phone[4]=""
-phone[5]=""
-phone[6]=""
-phone[7]=""
-phone[8]=""
-phone[9]=""
-phone[10]=""
-phone[11]=""
-phone[12]=""
-phone[13]=""
-phone[14]=""
-phone[15]=""
-phone[16]=""
-phone[17]=""
-phone[18]=""
-phone[19]=""
-phone[20]=""
-phone[21]=""
-phone[22]=""
-phone[23]=""
-phone[24]=""
-phone[25]=""
-phone[26]=""
-phone[27]=""
-phone[28]=""
-phone[29]=""
-phone[30]=""
-phone[31]=""
-phone[32]=""
-phone[33]=""
-phone[34]=""
-phone[35]=""
-phone[36]=""
-phone[37]=""
-phone[38]=""
-phone[39]=""
+phone[0]="18111229182"
+phone[1]="18111229182"
+phone[2]="18111229182"
+phone[3]="18111229182"
+phone[4]="18111229182"
+phone[5]="18111229182"
+phone[6]="18111229182"
+phone[7]="18111229182"
+phone[8]="18111229182"
+phone[9]="18111229182"
+phone[10]="18111229182"
+phone[11]="18111229182"
+phone[12]="18111229182"
+phone[13]="18111229182"
+phone[14]="18111229182"
+phone[15]="18111229182"
+phone[16]="18111229182"
+phone[17]="18111229182"
+phone[18]="18111229182"
+phone[19]="18111229182"
+phone[20]="18111229182"
+phone[21]="18111229182"
+phone[22]="18111229182"
+phone[23]="18111229182"
+phone[24]="18111229182"
+phone[25]="18111229182"
+phone[26]="18111229182"
+phone[27]="18111229182"
+phone[28]="18111229182"
+phone[29]="18111229182"
+phone[30]="18111229182"
+phone[31]="18111229182"
+phone[32]="18111229182"
+phone[33]="18111229182"
+phone[34]="18111229182"
+phone[35]="18111229182"
+phone[36]="18111229182"
+phone[37]="18111229182"
+phone[38]="33333"
+phone[39]="444444"
 
 var nametxt = $('.name');
 var phonetxt = $('.phone');
@@ -101,7 +101,10 @@ var pdnum = pcount;//参加人数判断是否抽取完
 
 //大奖开始停止
 function start() {
-    if ($("#btntxt").hasClass("btn_none")) { alert("误操作，请先确认名单！"); return false; }/************判断开始按钮是否可用************/
+    if ($("#btntxt").hasClass("btn_none")) {  swal("错误操作，请先确认名单!", {
+		button: false,
+		icon:"error"
+	});return false; }/************判断开始按钮是否可用************/
 	var zjnum = $('.list').find('p');
 	if(zjnum.length == pdnum){
 		alert('无法抽奖');
@@ -133,7 +136,10 @@ function startNum() {
 	for (var a = 0; a < pcount; a++) {
 	    if (xinm[a] != "") { hasNum = true; break;}
 	}
-	if (!hasNum) { alert("奖池号码已使用完毕！"); return false;}
+	if (!hasNum) { swal("奖池号码已使用完毕!", {
+		button: false,
+		icon:"error"
+	}); return false;}
 	while (xinm[num] == "") {
 	    num = Math.floor(Math.random() * pcount);
 	}
@@ -152,6 +158,8 @@ function stop() {
 function bzd() {
 	//获取中奖人数
 	var zjnum = $('.list').find('p');
+	console.log(xinm[num])
+	console.log(phone[num])
 	//打印中奖者名单
 	$('.conbox').prepend("<p>"+xinm[num]+"   "+phone[num]+"</p>");
 	$(".lucknum span:last,.conbox p:last").addClass("span");
@@ -169,7 +177,10 @@ function bzd() {
 
 //确认名单
 $('#btnqr').on('click', function () {
-    if ($("#btnqr").hasClass("btn_none")) { alert("误操作，请先抽奖！"); return false; }/************判断确认名单按钮是否可用************/
+    if ($("#btnqr").hasClass("btn_none")) {swal("错误操作，请先抽奖!", {
+		button: false,
+		icon:"error"
+	}); return false; }/************判断确认名单按钮是否可用************/
 	var cp = $('.conbox').find('p').removeAttr('style').clone();
 	$('.zjmd_bt_xy').prepend(cp);
 	$('.zjmd_bt_xy p:nth-last-child(1)').addClass("p1")
@@ -192,7 +203,7 @@ $('#btnqr').on('click', function () {
 	    /************修改抽奖轮次图标************/
 	    if (levelNum == 3) { $("#levelImg").attr("src", "/static/img/1_02a.png");}
 	    else if (levelNum == 2) { $("#levelImg").attr("src", "/static/img/1_02b.png"); pcount = 30/************指定中奖名单************/ }
-	    else if (levelNum == 1) { $("#levelImg").attr("src", "/static/img/1_02c.png");}		
+	    else if (levelNum == 1) { $("#levelImg").attr("src", "/static/img/1_02c.png");}
 	}
 	
 })

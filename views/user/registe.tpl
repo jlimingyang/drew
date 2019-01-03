@@ -17,7 +17,7 @@
             <div class="form-horizontal col-md-offset-3" id="login_form">
             <input  id="debug" type="hidden" value = "{{.msg}}"/>
                 <h3 class="form-title">用户注册</h3>
-                                <form role="form" action="/user/registe.py">
+                                <form role="form" action="/user/registe.py" method="post">
 
                 <div class="col-md-9">
                     <div class="form-group">

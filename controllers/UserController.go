@@ -80,7 +80,7 @@ func (this *UserController) UserLogin() {
 		token := utils.GenToken(userBase.Id, userBase.Username, ext)
 		this.Data["token"] = token
 		this.Data["username"] = username
-		this.TplName = "index.tpl"
+		this.TplName = "draw/index.html"
 	} else {
 		this.Data["msg"] = constants.MSG_LOGIN_FAIL
 		this.TplName = "user/login.tpl"

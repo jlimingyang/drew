@@ -9,6 +9,8 @@
 <title>抽奖</title>
 
 <link rel="stylesheet" href="/static/css/css.css" type="text/css">
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
 
 </head>
 <body>
