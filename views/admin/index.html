@@ -58,8 +58,9 @@
             <dt><i class="Hui-iconfont">&#xe616;</i>抽奖管理<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
             <dd>
                 <ul>
-                    <li><a data-href="/draw_set.page?auth={{.token}}" data-title="抽奖设置" href="javascript:void(0)">抽奖设置</a></li>
+                    <li><a data-href="/draw_set.page" data-title="抽奖设置" href="javascript:void(0)">抽奖设置</a></li>
                     <li><a data-href="/draw_list.page" data-title="中奖名单" href="javascript:void(0)">中奖名单</a></li>
+                    <li><a data-href="javascript:;" target="_blank"  data-title="中奖名单" href="/draw.page">进入抽奖</a></li>
                 </ul>
             </dd>
         </dl>
@@ -80,7 +81,7 @@
     <div id="iframe_box" class="Hui-article">
         <div class="show_iframe">
             <div style="display:none" class="loading"></div>
-            <iframe scrolling="yes" frameborder="0" src="/draw_set.page?auth={{.token}}"></iframe>
+            <iframe scrolling="yes" frameborder="0" src="/draw_set.page"></iframe>
         </div>
     </div>
 </section>

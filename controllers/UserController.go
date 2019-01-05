@@ -78,6 +78,7 @@ func (this *UserController) UserLogin() {
 		ext, _ := strconv.ParseInt(beego.AppConfig.String("tokenExt"), 10, 64)
 		//生成token
 		token := utils.GenToken(userBase.Id, userBase.Username, ext)
+		this.SetSession("auth", token)
 		beego.Debug("auth:", token)
 		this.Data["token"] = token
 		this.Data["username"] = username

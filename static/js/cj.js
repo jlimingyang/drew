@@ -5,93 +5,62 @@ var runTimes = 0, levelNum = 4;
 
 var xinm = new Array();
 var phone = new Array();
+var auth = $("#auth").val();
 
-xinm[0]="01"
-xinm[1]="02"
-xinm[2]="03"
-xinm[3]="04"
-xinm[4]="05"
-xinm[5]="06"
-xinm[6]="07"
-xinm[7]="08"
-xinm[8]="09"
-xinm[9]="10"
-xinm[10]="11"
-xinm[11]="12"
-xinm[12]="13"
-xinm[13]="14"
-xinm[14]="15"
-xinm[15]="16"
-xinm[16]="17"
-xinm[17]="18"
-xinm[18]="19"
-xinm[19]="20"
-xinm[20]="21"
-xinm[21]="22"
-xinm[22]="23"
-xinm[23]="24"
-xinm[24]="25"
-xinm[25]="26"
-xinm[26]="27"
-xinm[27]="28"
-xinm[28]="29"
-xinm[29]="30"
-xinm[30]="31"
-xinm[31]="32"
-xinm[32]="33"
-xinm[33]="34"
-xinm[34]="35"
-xinm[35]="36"
-xinm[36]="37"
-xinm[37]="38"
-xinm[38]="39"
-xinm[39]="40"
+function saveDraw(row,level) {
+	$.ajax({
+		type: 'POST',
+		url: '/auth/api/saveDraw',
+		async:false,
+		dataType: 'json',
+		beforeSend: function (xhr) {
+			xhr.setRequestHeader("auth", auth);
+		},
+		data: {"row": row, "level": level},
+		success: function (data) {
+			console.log(data)
+		}
+	});
+}
 
-phone[0]="18111229182"
-phone[1]="18111229182"
-phone[2]="18111229182"
-phone[3]="18111229182"
-phone[4]="18111229182"
-phone[5]="18111229182"
-phone[6]="18111229182"
-phone[7]="18111229182"
-phone[8]="18111229182"
-phone[9]="18111229182"
-phone[10]="18111229182"
-phone[11]="18111229182"
-phone[12]="18111229182"
-phone[13]="18111229182"
-phone[14]="18111229182"
-phone[15]="18111229182"
-phone[16]="18111229182"
-phone[17]="18111229182"
-phone[18]="18111229182"
-phone[19]="18111229182"
-phone[20]="18111229182"
-phone[21]="18111229182"
-phone[22]="18111229182"
-phone[23]="18111229182"
-phone[24]="18111229182"
-phone[25]="18111229182"
-phone[26]="18111229182"
-phone[27]="18111229182"
-phone[28]="18111229182"
-phone[29]="18111229182"
-phone[30]="18111229182"
-phone[31]="18111229182"
-phone[32]="18111229182"
-phone[33]="18111229182"
-phone[34]="18111229182"
-phone[35]="18111229182"
-phone[36]="18111229182"
-phone[37]="18111229182"
-phone[38]="33333"
-phone[39]="444444"
-
+function initX() {
+	$.ajax({
+		type: 'POST',
+		url: '/auth/api/queryDraw',
+		async:false,
+		dataType: 'json',
+		beforeSend: function (xhr) {
+			xhr.setRequestHeader("auth", auth);
+		},
+		data: {"page": 1, "pagesize": 99999999},
+		success: function (data) {
+			console.log(data)
+			if(data.code === 200){
+			$.each(data.data.List,function (index,v) {
+				xinm[index] = v.Row
+				phone[index] = " "
+			})
+			}else {
+				swal("请重新登录!", {
+					button: false,
+					icon:"error"
+				});
+			}
+		}
+	});
+}
+initX()
+$.each(xinm,function (index,v) {
+	console.log(v)
+})
+console.log("--------------------")
+$.each(phone,function (index,v) {
+	console.log(v)
+})
 var nametxt = $('.name');
 var phonetxt = $('.phone');
 var pcount = xinm.length;//参加人数
-var runing = true;  
+var runing = true;
 var num = 0; //随机数存储
 var to = 0;//从0开始
 var numr = 10;//每次抽取幸运奖人数
@@ -106,8 +75,11 @@ function start() {
 		icon:"error"
 	});return false; }/************判断开始按钮是否可用************/
 	var zjnum = $('.list').find('p');
-	if(zjnum.length == pdnum){
-		alert('无法抽奖');
+	if(zjnum.length == xinm.length){
+		swal("无法抽奖!", {
+			button: false,
+			icon:"error"
+		});
 	}else{
 		if (runing) {
 			runing = false;
@@ -131,17 +103,17 @@ function start() {
 
 //循环参加名单
 function startNum() {
-	num = Math.floor(Math.random() * pcount);
+	num = Math.floor(Math.random() * xinm.length);
 	var i_num = 0, hasNum = false;
-	for (var a = 0; a < pcount; a++) {
-	    if (xinm[a] != "") { hasNum = true; break;}
+	for (var a = 0; a < xinm.length; a++) {
+	    if (xinm[a] != "" && xinm[a] != undefined) { hasNum = true; break;}
 	}
 	if (!hasNum) { swal("奖池号码已使用完毕!", {
 		button: false,
 		icon:"error"
 	}); return false;}
 	while (xinm[num] == "") {
-	    num = Math.floor(Math.random() * pcount);
+	    num = Math.floor(Math.random() * xinm.length);
 	}
 	nametxt.html(xinm[num]);
 	phonetxt.html(phone[num]);
@@ -160,6 +132,7 @@ function bzd() {
 	var zjnum = $('.list').find('p');
 	console.log(xinm[num])
 	console.log(phone[num])
+	saveDraw(xinm[num],levelNum)
 	//打印中奖者名单
 	$('.conbox').prepend("<p>"+xinm[num]+"   "+phone[num]+"</p>");
 	$(".lucknum span:last,.conbox p:last").addClass("span");
@@ -202,13 +175,13 @@ $('#btnqr').on('click', function () {
 	    $("#btntxt").removeClass("btn_none")
 	    /************修改抽奖轮次图标************/
 	    if (levelNum == 3) { $("#levelImg").attr("src", "/static/img/1_02a.png");}
-	    else if (levelNum == 2) { $("#levelImg").attr("src", "/static/img/1_02b.png"); pcount = 30/************指定中奖名单************/ }
+	    else if (levelNum == 2) { $("#levelImg").attr("src", "/static/img/1_02b.png");/************指定中奖名单************/ }
 	    else if (levelNum == 1) { $("#levelImg").attr("src", "/static/img/1_02c.png");}
 	}
-	
+
 })
 
-$(function(){	    
+$(function(){
 	qs();
   });
 function qs(){

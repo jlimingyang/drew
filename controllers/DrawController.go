@@ -39,6 +39,18 @@ func (this *DrawController) QueryDraw() {
 	return
 }
 
+func (this *DrawController) QueryDrawRecord() {
+	userId, _ := this.GetInt("userId")
+	level, _ := this.GetInt("level")
+	page, _ := this.GetInt("page")
+	pagesize, _ := this.GetInt("pagesize")
+	beego.Debug("userId:", userId, " - page:", page, " - pagesize:", pagesize)
+	list := models.QueryDrawRecordByUserId(page, pagesize, userId, level)
+	this.Data["json"] = map[string]interface{}{"code": 200, "success": true, "message": "suc", "data": list}
+	this.ServeJSON()
+	return
+}
+
 func (this *DrawController) UpdateNameById() {
 	name := this.GetString("name")
 	id, _ := this.GetInt("id")
@@ -58,6 +70,21 @@ func (this *DrawController) DeleteById() {
 		this.Data["json"] = map[string]interface{}{"code": 200, "success": true, "message": "删除成功"}
 	} else {
 		this.Data["json"] = map[string]interface{}{"code": 201, "success": false, "message": "删除失败"}
+	}
+	this.ServeJSON()
+	return
+}
+
+//保存抽奖
+func (this *DrawController) SaveDraw() {
+	row, _ := this.GetInt("row")
+	userId, _ := this.GetInt("userId")
+	level, _ := this.GetInt("level")
+	_, err := models.SaveDrawRecord(userId, row, level)
+	if err == nil {
+		this.Data["json"] = map[string]interface{}{"code": 200, "success": true, "message": "保存成功"}
+	} else {
+		this.Data["json"] = map[string]interface{}{"code": 201, "success": false, "message": "保存失败"}
 	}
 	this.ServeJSON()
 	return

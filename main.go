@@ -16,6 +16,7 @@ import (
 )
 
 func init() {
+	beego.BConfig.WebConfig.Session.SessionCookieLifeTime = 999999999
 	//连接数据库
 	database := beego.AppConfig.String("mysqldb")
 	dburl := beego.AppConfig.String("mysqlurls") + ":" + beego.AppConfig.String("mysqlport")

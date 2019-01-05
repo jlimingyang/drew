@@ -101,7 +101,6 @@
             },
             data: {"page": page, "pagesize": pagesize},
             success: function (data) {
-                console.log(data)
                 var htmlstr = ""
                 if (data.code === 200) {
                     $.each(data.data.List, function (k, v) {

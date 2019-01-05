@@ -34,6 +34,13 @@ func SaveDraw(userId int, num int) (count int64) {
 			return -1
 		}
 	}
+	//清除中奖名单
+	if DrawRecordIsExist(userId) {
+		//清空相关数据
+		if !DeleteRecordByUserId(userId) {
+			return -1
+		}
+	}
 	draw := make([]DrawConfig, num)
 	for i := 0; i < num; i++ {
 		draw[i].Row = i + 1
@@ -57,10 +64,28 @@ func DrawConfigIsExist(userId int) bool {
 	return qs.Exist()
 }
 
+func DrawRecordIsExist(userId int) bool {
+	o := orm.NewOrm()
+	o.Using("default")
+	qs := o.QueryTable(new(DrawRecord)).Filter("UserId", userId)
+	return qs.Exist()
+}
+
 func DeleteDrawByUserId(userId int) bool {
 	o := orm.NewOrm()
 	o.Using("default")
 	qs := o.QueryTable(new(DrawConfig)).Filter("UserId", userId)
+	_, err := qs.Delete()
+	if err == nil {
+		return true
+	}
+	return false
+}
+
+func DeleteRecordByUserId(userId int) bool {
+	o := orm.NewOrm()
+	o.Using("default")
+	qs := o.QueryTable(new(DrawRecord)).Filter("UserId", userId)
 	_, err := qs.Delete()
 	if err == nil {
 		return true
@@ -104,25 +129,42 @@ func UpdateDrawNameById(id int, name string) (int64, error) {
 	})
 }
 
-func saveDrawRecord(userId int, row int, name string, level int) (int64, error) {
+func QueryNameByRow(row int) string {
+	o := orm.NewOrm()
+	o.Using("default")
+	var draw DrawConfig
+	err := o.QueryTable(new(DrawConfig)).Filter("Row", row).One(&draw)
+	if err == nil {
+		return draw.Name
+	}
+	return ""
+}
+
+func SaveDrawRecord(userId int, row int, level int) (int64, error) {
+	name := QueryNameByRow(row)
 	drawRecord := DrawRecord{UserId: userId, Row: row, Name: name, Level: level, C_time: time.Now(), U_time: time.Now()}
 	o := orm.NewOrm()
 	o.Using("default")
-	return o.Insert(drawRecord)
+	return o.Insert(&drawRecord)
 }
 
-func QueryDrawRecordByUserId(page int, size int, userId int) (list utils.Page) {
+func QueryDrawRecordByUserId(page int, size int, userId int, level int) utils.Page {
 	page -= 1
 	if page-1 < 0 {
 		page = 0
 	}
-	size = page * size
+	var list []*DrawRecord
 	o := orm.NewOrm()
 	o.Using("default")
-	qs := o.QueryTable(new(DrawRecord)).Filter("UserId", userId).OrderBy("-id").Limit(page, size)
-	total, error := qs.All(&list)
+	qs := o.QueryTable(new(DrawRecord)).Filter("UserId", userId)
+	if level > 0 {
+		qs = qs.Filter("Level", level)
+	}
+	qs.OrderBy("-id").Limit(size, page*size)
+	total, _ := qs.Count()
+	_, error := qs.All(&list)
 	if error == nil {
 		utils.PageUtil(int(total), page, size, list)
 	}
-	return
+	return utils.PageUtil(0, page+1, size, list)
 }
