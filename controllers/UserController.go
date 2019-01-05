@@ -78,12 +78,21 @@ func (this *UserController) UserLogin() {
 		ext, _ := strconv.ParseInt(beego.AppConfig.String("tokenExt"), 10, 64)
 		//生成token
 		token := utils.GenToken(userBase.Id, userBase.Username, ext)
+		beego.Debug("auth:", token)
 		this.Data["token"] = token
 		this.Data["username"] = username
-		this.TplName = "draw/index.html"
+		this.TplName = "admin/index.html"
 	} else {
 		this.Data["msg"] = constants.MSG_LOGIN_FAIL
 		this.TplName = "user/login.tpl"
 		return
 	}
+}
+
+func (this *UserController) Exit() {
+	userId, _ := this.GetInt("userId")
+	m.UpdateUserOnline(userId, 0)
+	this.Data["msg"] = "debug"
+	this.TplName = "user/login.tpl"
+	return
 }

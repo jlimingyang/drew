@@ -27,9 +27,16 @@ type DrawRecord struct {
 }
 
 func SaveDraw(userId int, num int) (count int64) {
+	//检验是否已经存在
+	if DrawConfigIsExist(userId) {
+		//清空相关数据
+		if !DeleteDrawByUserId(userId) {
+			return -1
+		}
+	}
 	draw := make([]DrawConfig, num)
-	for i := 1; i <= num; i++ {
-		draw[i].Row = i
+	for i := 0; i < num; i++ {
+		draw[i].Row = i + 1
 		draw[i].C_time = time.Now()
 		draw[i].UserId = userId
 		draw[i].U_time = time.Now()
@@ -43,20 +50,50 @@ func SaveDraw(userId int, num int) (count int64) {
 	return suc
 }
 
-func QueryDrawByUserId(page int, size int, userId int) (list utils.Page) {
+func DrawConfigIsExist(userId int) bool {
+	o := orm.NewOrm()
+	o.Using("default")
+	qs := o.QueryTable(new(DrawConfig)).Filter("UserId", userId)
+	return qs.Exist()
+}
+
+func DeleteDrawByUserId(userId int) bool {
+	o := orm.NewOrm()
+	o.Using("default")
+	qs := o.QueryTable(new(DrawConfig)).Filter("UserId", userId)
+	_, err := qs.Delete()
+	if err == nil {
+		return true
+	}
+	return false
+}
+
+func DeleteDrawById(id int) bool {
+	o := orm.NewOrm()
+	o.Using("default")
+	qs := o.QueryTable(new(DrawConfig)).Filter("Id", id)
+	_, err := qs.Delete()
+	if err == nil {
+		return true
+	}
+	return false
+}
+
+func QueryDrawByUserId(page int, size int, userId int) utils.Page {
 	page -= 1
 	if page-1 < 0 {
 		page = 0
 	}
-	size = page * size
+	var list []*DrawConfig
 	o := orm.NewOrm()
 	o.Using("default")
-	qs := o.QueryTable(new(DrawConfig)).Filter("UserId", userId).OrderBy("-id").Limit(page, size)
-	total, error := qs.All(&list)
+	qs := o.QueryTable(new(DrawConfig)).Filter("UserId", userId).OrderBy("-id").Limit(size, page*size)
+	total, _ := qs.Count()
+	_, error := qs.All(&list, "Id", "Name", "Row", "C_time", "U_time")
 	if error == nil {
-		utils.PageUtil(int(total), page, size, list)
+		return utils.PageUtil(int(total), page+1, size, list)
 	}
-	return
+	return utils.PageUtil(0, page+1, size, list)
 }
 
 func UpdateDrawNameById(id int, name string) (int64, error) {
